@@ -6,9 +6,3 @@ spring:
       username: user123
       password: pass123
       database: reactivedb
-
-#logging.level.org.springframework.web.reactive: DEBUG
-logging.level.com.netshoes: DEBUG
-inventory:
-  uri: "https://www.random.org"
-  endpoint: "/integers/?num=1&min=0&max=20&col=1&base=10&format=plain"

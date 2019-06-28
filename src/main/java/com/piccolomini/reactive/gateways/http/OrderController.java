@@ -22,20 +22,20 @@ public class OrderController {
     this.gateway = gateway;
   }
 
-  @PostMapping("/order")
+  @PostMapping("/orders")
   @ResponseStatus(HttpStatus.CREATED)
   public Mono<Order> create(@Valid @RequestBody final Order product) {
     return gateway.save(product).doOnNext(p -> log.debug("Create new order - {}", p));
   }
 
-  @PutMapping("/order")
+  @PutMapping("/orders")
   @ResponseStatus(HttpStatus.OK)
   public Mono<Order> update(@Valid @RequestBody final Mono<Order> product) {
     return product.flatMap(
-        p -> gateway.save(p).doOnNext(prod -> log.info("Updating oder - {}", prod)));
+        p -> gateway.save(p).doOnNext(prod -> log.info("Updating order - {}", prod)));
   }
 
-  @GetMapping("/order/{id}")
+  @GetMapping("/orders/{id}")
   @ResponseStatus(HttpStatus.OK)
   public Mono<Order> find(@PathVariable final Long id) {
     return gateway
@@ -44,7 +44,7 @@ public class OrderController {
         .doOnNext(p -> log.debug("Get order by id {}", id));
   }
 
-  @DeleteMapping("/order/{id}")
+  @DeleteMapping("/orders/{id}")
   @ResponseStatus(HttpStatus.ACCEPTED)
   public Mono<Void> delete(@PathVariable final Long id) {
     return gateway.deleteOne(id);
