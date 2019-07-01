@@ -1,8 +1,7 @@
-package com.piccolomini.reactive.mongo;
+package com.piccolomini.reactive.gateways.mongo;
 
 import com.mongodb.reactivestreams.client.MongoCollection;
 import com.piccolomini.reactive.domains.Order;
-import com.piccolomini.reactive.gateways.mongo.OrderRepository;
 import org.bson.Document;
 import org.junit.Before;
 import org.junit.Test;
