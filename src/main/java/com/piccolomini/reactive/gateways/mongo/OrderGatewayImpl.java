@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 public class OrderGatewayImpl implements OrderGateway {
 
   private OrderRepository repository;
+  private OrderRepository nullRepository;
 
   @Autowired
   public OrderGatewayImpl(final OrderRepository repository) {
@@ -24,7 +25,14 @@ public class OrderGatewayImpl implements OrderGateway {
 
   @Override
   public Mono<Order> findOne(final Long id) {
-    //    throw new OrderNotFoundException(999L);
+
+    //    return Mono.from(nullRepository.findById(id))
+    //        .onErrorResume(
+    //            throwable -> {
+    //              System.out.println("OCORREU UM ERRO INESPERADO");
+    //              return Mono.error(new OrderNotFoundException(id));
+    //            });
+    // throw new OrderNotFoundException(999L);
     return repository.findById(id);
   }
 

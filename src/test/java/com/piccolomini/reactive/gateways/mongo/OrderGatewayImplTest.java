@@ -1,6 +1,7 @@
 package com.piccolomini.reactive.gateways.mongo;
 
 import com.piccolomini.reactive.domains.Order;
+import com.piccolomini.reactive.domains.exceptions.OrderNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -88,5 +89,24 @@ public class OrderGatewayImplTest {
     List<Order> orders = findALl.collectList().block();
     assertTrue(orders.stream().anyMatch(x -> order1.getId().equals(x.getId())));
     assertTrue(orders.stream().anyMatch(x -> order2.getId().equals(x.getId())));
+  }
+
+  @Test(expected = OrderNotFoundException.class)
+  public void shouldReturnAnError() {
+    BDDMockito.given(orderRepository.findById(1L)).willThrow(new OrderNotFoundException(1L));
+    StepVerifier.create(orderGateway.findOne(1L))
+        .expectError()
+        .verifyThenAssertThat()
+        .hasOperatorErrorOfType(OrderNotFoundException.class);
+  }
+
+  @Test
+  public void shouldReturnAnErrorReactive() {
+    BDDMockito.given(orderRepository.findById(1L))
+        .willReturn(Mono.error(new OrderNotFoundException(1L)));
+    StepVerifier.create(orderGateway.findOne(1L))
+        .expectError()
+        .verifyThenAssertThat()
+        .hasOperatorErrorOfType(OrderNotFoundException.class);
   }
 }
