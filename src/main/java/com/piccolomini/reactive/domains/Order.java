@@ -11,14 +11,28 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 @ToString
 @Document
 public class Order {
 
-  @NotNull @Id private Long id;
-  @NotBlank private String productName;
-  @NotNull private Integer quantity;
-  @NotBlank private String cardToken;
-  @NotNull private BigDecimal unitPrice;
+  @NonNull @NotNull @Id private Long id;
+  @NonNull @NotBlank private String productName;
+  @NonNull @NotNull private Integer quantity;
+  @NonNull @NotBlank private String cardToken;
+  @NonNull @NotNull private BigDecimal unitPrice;
+  private String status;
+
+  public Order(Long id) {
+    this.id = id;
+  }
+
+  public Order(Order order, String status) {
+    this.id = order.getId();
+    this.cardToken = order.getCardToken();
+    this.productName = order.getProductName();
+    this.quantity = order.getQuantity();
+    this.unitPrice = order.getUnitPrice();
+    this.status = status;
+  }
 }

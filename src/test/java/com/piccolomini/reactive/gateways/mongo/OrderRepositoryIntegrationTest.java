@@ -55,7 +55,7 @@ public class OrderRepositoryIntegrationTest {
   }
 
   @Test
-  public void findOneByInvalidCodehouldReturnEmpty() {
+  public void findOneByInvalidCodeShouldReturnEmpty() {
     final Mono<Order> order = repository.findById(99L);
     StepVerifier.create(order).expectNextCount(0L).verifyComplete();
   }

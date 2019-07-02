@@ -24,6 +24,7 @@ public class OrderGatewayImpl implements OrderGateway {
 
   @Override
   public Mono<Order> findOne(final Long id) {
+    //    throw new OrderNotFoundException(999L);
     return repository.findById(id);
   }
 
