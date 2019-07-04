@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  postgres-admin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    ports:
+      - 8085:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: teste@teste.com
+      PGADMIN_DEFAULT_PASSWORD: teste
+    links:
+      - postgres
+    networks:
+      - postgres-compose-network
+
+  postgres:
+    #    image: postgres
+    build:
+      context: .
+      dockerfile: DockerfilePostgres
+    container_name: postegresdb
+    environment:
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_USER: root
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres-compose-network
+
+networks:
+  postgres-compose-network:

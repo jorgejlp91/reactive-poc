@@ -1,8 +1,7 @@
 package com.piccolomini.reactive.gateways.http.handlers;
 
 import com.piccolomini.reactive.domains.Order;
-import com.piccolomini.reactive.gateways.OrderGateway;
-import com.piccolomini.reactive.gateways.OrderStatusGateway;
+import com.piccolomini.reactive.usecases.GetOrderStatusUseCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -29,8 +28,9 @@ import static org.mockito.ArgumentMatchers.isNotNull;
 @SpringBootTest
 public class OrderStatusHandlerTest {
 
-  @Mock private OrderGateway orderGateway;
-  @Mock private OrderStatusGateway orderStatusGateway;
+  //  @Mock private OrderGateway orderGateway;
+  //  @Mock private OrderStatusGateway orderStatusGateway;
+  @Mock private GetOrderStatusUseCase useCase;
   @InjectMocks private OrderStatusHandler orderStatusHandler;
   @Mock private ServerRequest request;
 
@@ -38,8 +38,10 @@ public class OrderStatusHandlerTest {
   public void shouldReturnAValidResponse() {
     // GIVEN: a valid gateways mock
     Order order = new Order(8L, "Bicicleta", 1, "TOKEN", BigDecimal.valueOf(1500.00));
-    BDDMockito.given(orderGateway.findAll()).willReturn(Flux.just(order));
-    BDDMockito.given(orderStatusGateway.getStatus(8L)).willReturn(Mono.just(1L));
+    order.setStatus("PAID");
+    //    BDDMockito.given(orderGateway.findAll()).willReturn(Flux.just(order));
+    //    BDDMockito.given(orderStatusGateway.getStatus(8L)).willReturn(Mono.just(1L));
+    BDDMockito.given(useCase.execute(request)).willReturn(Flux.just(order));
 
     // WHEN: the handler is called
     Mono<ServerResponse> response = orderStatusHandler.listOrderStatus(request);
@@ -55,6 +57,7 @@ public class OrderStatusHandlerTest {
               assertThat(entityServerResponse.statusCode(), equalTo(HttpStatus.OK));
               assertThat(entityServerResponse.entity(), isNotNull());
               assertThat(entityServerResponse.entity().getId(), equalTo(8L));
+              assertThat(entityServerResponse.entity().getStatus(), equalTo("PAID"));
             });
   }
 }

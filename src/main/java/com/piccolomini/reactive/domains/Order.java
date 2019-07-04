@@ -17,7 +17,9 @@ import java.math.BigDecimal;
 public class Order {
 
   @NonNull @NotNull @Id private Long id;
+
   @NonNull @NotBlank private String productName;
+
   @NonNull @NotNull private Integer quantity;
   @NonNull @NotBlank private String cardToken;
   @NonNull @NotNull private BigDecimal unitPrice;

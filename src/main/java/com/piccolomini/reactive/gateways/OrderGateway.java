@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 public interface OrderGateway {
 
-  Mono<Order> save(Order product);
+  Mono<Order> save(Order order);
 
   Mono<Order> findOne(Long id);
 

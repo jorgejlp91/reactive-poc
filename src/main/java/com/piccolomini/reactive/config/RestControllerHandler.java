@@ -1,5 +1,6 @@
 package com.piccolomini.reactive.config;
 
+import com.piccolomini.reactive.domains.exceptions.AccountNotFoundException;
 import com.piccolomini.reactive.domains.exceptions.OrderNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,14 @@ public class RestControllerHandler {
 
   @ExceptionHandler(OrderNotFoundException.class)
   public ResponseEntity<String> handleNotFound(final OrderNotFoundException ex) {
+    log.error(ex.getMessage(), ex);
+    // final ErrorResponse error = new ErrorResponse();
+    // error.setMsg("not found");
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(AccountNotFoundException.class)
+  public ResponseEntity<String> handleNotFound(final AccountNotFoundException ex) {
     log.error(ex.getMessage(), ex);
     // final ErrorResponse error = new ErrorResponse();
     // error.setMsg("not found");

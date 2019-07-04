@@ -19,8 +19,8 @@ public class OrderGatewayImpl implements OrderGateway {
   }
 
   @Override
-  public Mono<Order> save(final Order product) {
-    return repository.save(product);
+  public Mono<Order> save(final Order order) {
+    return repository.save(order);
   }
 
   @Override

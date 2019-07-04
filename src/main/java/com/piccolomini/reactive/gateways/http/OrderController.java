@@ -11,13 +11,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @RestController
 public class OrderController {
 
   private OrderGateway gateway;
-  private OrderGateway nullGateway;
 
   @Autowired
   public OrderController(final OrderGateway gateway) {
@@ -26,15 +26,14 @@ public class OrderController {
 
   @PostMapping("/orders")
   @ResponseStatus(HttpStatus.CREATED)
-  public Mono<Order> create(@Valid @RequestBody final Order product) {
-    return gateway.save(product).doOnNext(p -> log.debug("Create new order - {}", p));
+  public Mono<Order> create(@Valid @RequestBody final Order order) {
+    return gateway.save(order).doOnNext(o -> log.debug("Create new order - {}", o));
   }
 
   @PutMapping("/orders")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<Order> update(@Valid @RequestBody final Mono<Order> product) {
-    return product.flatMap(
-        p -> gateway.save(p).doOnNext(prod -> log.info("Updating order - {}", prod)));
+  public Mono<Order> update(@Valid @RequestBody final Mono<Order> order) {
+    return order.flatMap(o -> gateway.save(o).doOnNext(or -> log.info("Updating order - {}", or)));
   }
 
   @GetMapping("/orders/{id}")
@@ -43,7 +42,7 @@ public class OrderController {
     return gateway
         .findOne(id)
         .switchIfEmpty(Mono.error(new OrderNotFoundException(id)))
-        .doOnNext(p -> log.debug("Get order by id {}", id));
+        .doOnNext(o -> log.debug("Get order by id {}", id));
   }
 
   @DeleteMapping("/orders/{id}")
@@ -60,22 +59,66 @@ public class OrderController {
         gateway
             .findOne(id)
             .switchIfEmpty(Mono.error(new OrderNotFoundException(id)))
-            .doOnNext(p -> log.debug("Get order by id {}", id));
+            .doOnNext(o -> log.debug("Get order by id {}", id));
 
     // Não vai lançar exceção se não achar
     Mono<Order> orderMono2 =
-        gateway.findOne(id2).doOnNext(p -> log.debug("Get order 2 by id {}", id2));
+        gateway.findOne(id2).doOnNext(o -> log.debug("Get order 2 by id {}", id2));
 
     return Flux.concat(orderMono, orderMono2);
   }
 
-  @GetMapping("/nullOrder/{id}")
+  @GetMapping("/exception/{id}")
   @ResponseStatus(HttpStatus.OK)
   public Mono<Order> findNull(@PathVariable final Long id) {
     return gateway
         .findOne(id)
         .switchIfEmpty(Mono.error(new OrderNotFoundException(id)))
-        .doOnNext(p -> nullGateway.findOne(id))
+        .doOnNext(p -> throwException(id))
         .onErrorReturn(new Order(999L));
+  }
+
+  private Mono<Order> throwException(Long id) {
+    throw new NullPointerException("test");
+  }
+
+  @GetMapping("/infiniteOrder/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public Flux<Order> findInfinite(@PathVariable final Long id) {
+    return gateway
+        .findAll()
+        .switchIfEmpty(
+            subscriber -> {
+              log.warn("this will never execute");
+              Mono.error(new OrderNotFoundException(id));
+            })
+        .doOnNext(p -> log.info("Get all orders infinite by id {}", id));
+  }
+
+  @GetMapping("/orderNoExec/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public Mono<Order> findNoExecute(@PathVariable final Long id) {
+
+    final AtomicBoolean test = new AtomicBoolean(false);
+
+    gateway
+        .findOne(id)
+        .doOnNext(
+            find -> {
+              log.error("this will never execute even order was found ");
+              test.set(true);
+            });
+
+    log.info("result of first find one: {}", test);
+
+    return Mono.just(test)
+        .flatMap(
+            t -> {
+              if (t.get()) {
+                return Mono.just(new Order(444L));
+              } else {
+                return Mono.just(new Order(555L));
+              }
+            });
   }
 }
