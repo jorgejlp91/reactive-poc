@@ -28,19 +28,15 @@ import static org.mockito.ArgumentMatchers.isNotNull;
 @SpringBootTest
 public class OrderStatusHandlerTest {
 
-  //  @Mock private OrderGateway orderGateway;
-  //  @Mock private OrderStatusGateway orderStatusGateway;
   @Mock private GetOrderStatusUseCase useCase;
   @InjectMocks private OrderStatusHandler orderStatusHandler;
   @Mock private ServerRequest request;
 
   @Test
   public void shouldReturnAValidResponse() {
-    // GIVEN: a valid gateways mock
+    // GIVEN: a valid usecase mock
     Order order = new Order(8L, "Bicicleta", 1, "TOKEN", BigDecimal.valueOf(1500.00));
     order.setStatus("PAID");
-    //    BDDMockito.given(orderGateway.findAll()).willReturn(Flux.just(order));
-    //    BDDMockito.given(orderStatusGateway.getStatus(8L)).willReturn(Mono.just(1L));
     BDDMockito.given(useCase.execute(request)).willReturn(Flux.just(order));
 
     // WHEN: the handler is called
