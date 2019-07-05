@@ -40,7 +40,7 @@ public class OrderStatusHandlerTest {
     BDDMockito.given(useCase.execute(request)).willReturn(Flux.just(order));
 
     // WHEN: the handler is called
-    Mono<ServerResponse> response = orderStatusHandler.listOrderStatus(request);
+    Mono<ServerResponse> response = orderStatusHandler.handle(request);
 
     // THEN: the response is valid
     StepVerifier.create(response)

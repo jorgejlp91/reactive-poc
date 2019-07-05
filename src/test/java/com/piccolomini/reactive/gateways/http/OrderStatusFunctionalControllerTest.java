@@ -31,7 +31,7 @@ public class OrderStatusFunctionalControllerTest {
   public void testGetOrderStatusShouldBeOk() {
     // GIVEN: A valid mock of gateway
     final Order order = new Order(1L, "Bicicleta", 1, "TOKENCARD", BigDecimal.valueOf(1500.00));
-    given(handler.listOrderStatus(BDDMockito.any(ServerRequest.class)))
+    given(handler.handle(BDDMockito.any(ServerRequest.class)))
         .willReturn(
             ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)

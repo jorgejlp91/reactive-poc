@@ -7,15 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-// @ComponentScan(
-//    basePackages = "com.piccolomini.reactive",
-//    excludeFilters =
-//        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes =
-// AccountRepository.class))
 @SpringBootApplication
-// @EnableJdbcRepositories
-// @EnableR2dbcRepositories(
-//    excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OrderRepository.class))
 @EnableMongoRepositories(
     excludeFilters =
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AccountRepository.class))

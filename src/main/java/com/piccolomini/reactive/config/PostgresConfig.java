@@ -17,7 +17,7 @@ import org.springframework.data.relational.core.mapping.RelationalMappingContext
 public class PostgresConfig extends AbstractR2dbcConfiguration {
 
   @Primary
-  @Bean(value = "rxAccountRepository")
+  @Bean
   public AccountRepository repository(R2dbcRepositoryFactory factory) {
     return factory.getRepository(AccountRepository.class);
   }
@@ -33,15 +33,6 @@ public class PostgresConfig extends AbstractR2dbcConfiguration {
 
   @Bean
   public ConnectionFactory connectionFactory() {
-    //    return ConnectionFactories.get(
-    //        ConnectionFactoryOptions.builder()
-    //            .option(DRIVER, "postgresql")
-    //            .option(HOST, "localhost")
-    //            .option(PORT, 5432) // optional, defaults to 5432
-    //            .option(USER, "root")
-    //            .option(PASSWORD, "pass123")
-    //            .option(DATABASE, "root") // optional
-    //            .build());
     return new PostgresqlConnectionFactory(
         PostgresqlConnectionConfiguration.builder()
             .host("localhost")

@@ -5,7 +5,6 @@ import com.piccolomini.reactive.domains.exceptions.AccountNotFoundException;
 import com.piccolomini.reactive.gateways.AccountGateway;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.r2dbc.function.DatabaseClient;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -19,9 +18,7 @@ public class AccountGatewayImpl implements AccountGateway {
   private final DatabaseClient databaseClient;
 
   @Autowired
-  public AccountGatewayImpl(
-      @Qualifier("rxAccountRepository") AccountRepository accountRepository,
-      DatabaseClient databaseClient) {
+  public AccountGatewayImpl(AccountRepository accountRepository, DatabaseClient databaseClient) {
     this.accountRepository = accountRepository;
     this.databaseClient = databaseClient;
   }

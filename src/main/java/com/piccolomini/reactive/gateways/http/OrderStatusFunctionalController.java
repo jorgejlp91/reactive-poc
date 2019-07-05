@@ -18,6 +18,6 @@ public class OrderStatusFunctionalController {
   RouterFunction<ServerResponse> route(OrderStatusHandler orderStatusHandler) {
     return RouterFunctions.route(
         GET("/orderStatus").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
-        orderStatusHandler::listOrderStatus);
+        orderStatusHandler::handle);
   }
 }

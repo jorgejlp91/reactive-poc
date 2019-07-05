@@ -23,7 +23,7 @@ public class OrderStatusHandler {
     this.getOrderStatusUseCase = getOrderStatusUseCase;
   }
 
-  public Mono<ServerResponse> listOrderStatus(ServerRequest request) {
+  public Mono<ServerResponse> handle(ServerRequest request) {
     return ok().contentType(MediaType.APPLICATION_JSON)
         .body(getOrderStatusUseCase.execute(request), Order.class)
         .switchIfEmpty(ServerResponse.notFound().build())
