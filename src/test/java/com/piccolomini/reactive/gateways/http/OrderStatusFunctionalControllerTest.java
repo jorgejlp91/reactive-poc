@@ -1,6 +1,7 @@
 package com.piccolomini.reactive.gateways.http;
 
 import com.piccolomini.reactive.domains.Order;
+import com.piccolomini.reactive.gateways.OrderStatusGateway;
 import com.piccolomini.reactive.gateways.http.handlers.OrderStatusHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ public class OrderStatusFunctionalControllerTest {
 
   @Autowired private WebTestClient client;
 
+  @MockBean private OrderStatusGateway orderStatusGateway;
   @MockBean private OrderStatusHandler handler;
 
   @Test

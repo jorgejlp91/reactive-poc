@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: user123
+      password: pass123
+      database: reactivedb
+      repositories:
+        enabled: false
+server:
+  port: 8082
