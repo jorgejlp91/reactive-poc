@@ -30,6 +30,11 @@ public class OrderGatewayImpl implements OrderGateway {
 
   @Override
   public Order findOne(Long id) {
+    try {
+      Thread.sleep(500);
+    } catch (InterruptedException e) {
+      // DO nothing
+    }
     return repository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
   }
 

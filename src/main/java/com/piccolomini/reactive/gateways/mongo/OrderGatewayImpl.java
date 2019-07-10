@@ -33,7 +33,10 @@ public class OrderGatewayImpl implements OrderGateway {
     //              return Mono.error(new OrderNotFoundException(id));
     //            });
     // throw new OrderNotFoundException(999L);
+
     return repository.findById(id);
+
+    //    return Mono.from(repository.findById(id)).delaySubscription(Duration.ofMillis(500L));
   }
 
   public Mono<Void> deleteOne(final Long id) {
