@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -61,6 +62,12 @@ public class AccountController {
         .findOne(username)
         .switchIfEmpty(Mono.error(new AccountNotFoundException(username)))
         .doOnNext(acc -> log.debug("Get account by username {}", username));
+  }
+
+  @GetMapping("/accounts")
+  @ResponseStatus(HttpStatus.OK)
+  public Flux<Account> findAll() {
+    return gateway.findAll();
   }
 
   @DeleteMapping("/accounts/{username}")
