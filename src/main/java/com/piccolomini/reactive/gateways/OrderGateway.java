@@ -13,4 +13,6 @@ public interface OrderGateway {
   Mono<Void> deleteOne(Long id);
 
   Flux<Order> findAll();
+
+  Flux<Order> findEmpty();
 }

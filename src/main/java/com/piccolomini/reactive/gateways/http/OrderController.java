@@ -61,24 +61,28 @@ public class OrderController {
             .switchIfEmpty(Mono.error(new OrderNotFoundException(id)))
             .doOnNext(o -> log.debug("Get order by id {}", id));
 
-    // Não vai lançar exceção se não achar
+    // It won't throws an exception if the order doesn't exists
     Mono<Order> orderMono2 =
         gateway.findOne(id2).doOnNext(o -> log.debug("Get order 2 by id {}", id2));
 
+    // if the orderMono isn't present in return statement,
+    // when occurs an error, never will throw because there is no subscriber listening
     return Flux.concat(orderMono, orderMono2);
   }
 
-  @GetMapping("/exception/{id}")
+  @GetMapping("/handledException/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<Order> findNull(@PathVariable final Long id) {
-    return gateway
-        .findOne(id)
-        .switchIfEmpty(Mono.error(new OrderNotFoundException(id)))
-        .doOnNext(p -> throwException(id))
-        .onErrorReturn(new Order(999L));
+  public Mono<Order> findHandledException(@PathVariable final Long id) {
+    return gateway.findOne(id).switchIfEmpty(Mono.error(new OrderNotFoundException(id)));
   }
 
-  private Mono<Order> throwException(Long id) {
+  @GetMapping("/unhandledException/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public Mono<Order> findUnHandledException(@PathVariable final Long id) {
+    return gateway.findOne(id).doOnNext(this::throwException);
+  }
+
+  private Mono<Order> throwException(Order order) {
     throw new NullPointerException("test");
   }
 
@@ -86,10 +90,11 @@ public class OrderController {
   @ResponseStatus(HttpStatus.OK)
   public Flux<Order> findInfinite(@PathVariable final Long id) {
     return gateway
-        .findAll()
+        .findEmpty()
         .switchIfEmpty(
             subscriber -> {
               log.warn("this will never execute");
+              // without a return statement , the stream never proceed, causing an infinite wait
               Mono.error(new OrderNotFoundException(id));
             })
         .doOnNext(p -> log.info("Get all orders infinite by id {}", id));
@@ -106,6 +111,7 @@ public class OrderController {
         .doOnNext(
             find -> {
               log.error("this will never execute even order was found ");
+              // because there is no subscriber listening
               test.set(true);
             });
 

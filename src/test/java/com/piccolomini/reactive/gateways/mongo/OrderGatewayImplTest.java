@@ -93,16 +93,17 @@ public class OrderGatewayImplTest {
 
   @Test(expected = OrderNotFoundException.class)
   public void shouldReturnAnError() {
-    BDDMockito.given(orderRepository.findById(1L)).willThrow(new OrderNotFoundException(1L));
-    StepVerifier.create(orderGateway.findOne(1L))
-        .expectError()
-        .verifyThenAssertThat()
-        .hasOperatorErrorOfType(OrderNotFoundException.class);
+    BDDMockito.given(orderRepository.findById(1L))
+        // Throws an exceptions that unhandled by the reactive stream programming
+        .willThrow(new OrderNotFoundException(1L));
+    StepVerifier.create(orderGateway.findOne(1L));
+    // no needs to verify the exception throw with StepVerifier methods
   }
 
   @Test
   public void shouldReturnAnErrorReactive() {
     BDDMockito.given(orderRepository.findById(1L))
+        // throws an exception with reactive way
         .willReturn(Mono.error(new OrderNotFoundException(1L)));
     StepVerifier.create(orderGateway.findOne(1L))
         .expectError()

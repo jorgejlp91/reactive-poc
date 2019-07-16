@@ -47,4 +47,9 @@ public class OrderGatewayImpl implements OrderGateway {
   public Flux<Order> findAll() {
     return repository.findAll();
   }
+
+  @Override
+  public Flux<Order> findEmpty() {
+    return Flux.empty();
+  }
 }
