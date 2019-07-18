@@ -6,4 +6,6 @@ import reactor.core.publisher.Mono;
 public interface OrderStatusGateway {
 
   Mono<Order> getStatus(Long orderId);
+
+  Mono<Order> simulateUncaughtError();
 }

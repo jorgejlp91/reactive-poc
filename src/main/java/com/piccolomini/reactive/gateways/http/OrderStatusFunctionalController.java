@@ -30,10 +30,23 @@ public class OrderStatusFunctionalController {
   }
 
   @Bean
-  RouterFunction<ServerResponse> routeStatus(OrderStatusHandler orderStatusHandler) {
+  RouterFunction<ServerResponse> routeStatus() {
     return RouterFunctions.route(
         GET("/status").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
         this::handleStatus);
+  }
+
+  @Bean
+  RouterFunction<ServerResponse> routeSimulateError() {
+    return RouterFunctions.route(
+        GET("/simulateGenericError").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
+        this::handleSimulateError);
+  }
+
+  private Mono<ServerResponse> handleSimulateError(ServerRequest serverRequest) {
+    return ServerResponse.ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(orderStatusGateway.simulateUncaughtError(), Order.class);
   }
 
   private Mono<ServerResponse> handleStatus(ServerRequest serverRequest) {

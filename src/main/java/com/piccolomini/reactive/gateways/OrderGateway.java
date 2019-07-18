@@ -10,6 +10,10 @@ public interface OrderGateway {
 
   Mono<Order> findOne(Long id);
 
+  Mono<Order> throwException();
+
+  Mono<Order> throwMonoError();
+
   Mono<Void> deleteOne(Long id);
 
   Flux<Order> findAll();

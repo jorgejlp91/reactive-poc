@@ -44,6 +44,16 @@ public class OrderStatusGatewayImpl implements OrderStatusGateway {
             });
   }
 
+  @Override
+  public Mono<Order> simulateUncaughtError() {
+    return client
+        .post()
+        .uri(orderUri + "bla" + orderEndpoint)
+        .retrieve()
+        .bodyToMono(OrderStatus.class)
+        .flatMap(orderStatus -> Mono.empty());
+  }
+
   private OrderStatus buildBody(final Long orderId) {
     OrderStatus body = new OrderStatus();
     body.setOrderId(orderId);

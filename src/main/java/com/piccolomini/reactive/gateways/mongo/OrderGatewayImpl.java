@@ -32,11 +32,20 @@ public class OrderGatewayImpl implements OrderGateway {
     //              System.out.println("OCORREU UM ERRO INESPERADO");
     //              return Mono.error(new OrderNotFoundException(id));
     //            });
-    // throw new OrderNotFoundException(999L);
 
     return repository.findById(id);
 
     //    return Mono.from(repository.findById(id)).delaySubscription(Duration.ofMillis(500L));
+  }
+
+  @Override
+  public Mono<Order> throwException() {
+    throw new RuntimeException("non reactive error");
+  }
+
+  @Override
+  public Mono<Order> throwMonoError() {
+    return Mono.error(new RuntimeException("reactive error"));
   }
 
   public Mono<Void> deleteOne(final Long id) {
