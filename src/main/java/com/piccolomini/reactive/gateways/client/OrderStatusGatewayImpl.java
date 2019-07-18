@@ -1,6 +1,8 @@
 package com.piccolomini.reactive.gateways.client;
 
+import com.piccolomini.reactive.domains.Order;
 import com.piccolomini.reactive.gateways.OrderStatusGateway;
+import com.piccolomini.reactive.gateways.client.json.OrderStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +16,10 @@ public class OrderStatusGatewayImpl implements OrderStatusGateway {
 
   private final WebClient client;
 
-  @Value("${inventory.uri:https://www.random.org}")
+  @Value("${integration.uri:http://localhost:8084}")
   private String orderUri;
 
-  @Value("${inventory.endpoint:/integers/?num=1&min=1&max=3&col=1&base=10&format=plain}")
+  @Value("${integration.endpoint:/integration/api/v1/status}")
   private String orderEndpoint;
 
   @Autowired
@@ -26,20 +28,25 @@ public class OrderStatusGatewayImpl implements OrderStatusGateway {
   }
 
   @Override
-  public Mono<Long> getStatus(final Long orderId) {
-    return getRandomAsString(orderUri + orderEndpoint)
-        .map(c -> Long.valueOf(sanitize(c)))
-        .doOnNext(c -> log.info("Get order status: {} | order: {}", c, orderId));
+  public Mono<Order> getStatus(final Long orderId) {
+    return client
+        .post()
+        .uri(orderUri + orderEndpoint)
+        .syncBody(buildBody(orderId))
+        .retrieve()
+        .bodyToMono(OrderStatus.class)
+        .flatMap(
+            orderStatus -> {
+              log.info("Status retrieved : {}", orderStatus);
+              Order order = new Order();
+              order.setStatus(orderStatus.getStatus());
+              return Mono.just(order);
+            });
   }
 
-  private Mono<String> getRandomAsString(final String url) {
-    return client
-        .get()
-        .uri(url)
-        .retrieve()
-        .bodyToMono(String.class)
-        .defaultIfEmpty("0")
-        // fallback
-        .onErrorReturn("0");
+  private OrderStatus buildBody(final Long orderId) {
+    OrderStatus body = new OrderStatus();
+    body.setOrderId(orderId);
+    return body;
   }
 }

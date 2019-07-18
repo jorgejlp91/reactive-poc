@@ -1,5 +1,6 @@
 package com.piccolomini.reactive.gateways.http;
 
+import com.piccolomini.reactive.domains.Order;
 import com.piccolomini.reactive.gateways.OrderStatusGateway;
 import com.piccolomini.reactive.gateways.http.handlers.OrderStatusHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,6 @@ public class OrderStatusFunctionalController {
   private Mono<ServerResponse> handleStatus(ServerRequest serverRequest) {
     return ServerResponse.ok()
         .contentType(MediaType.APPLICATION_JSON)
-        .body(orderStatusGateway.getStatus(1L), Long.class);
+        .body(orderStatusGateway.getStatus(1L), Order.class);
   }
 }

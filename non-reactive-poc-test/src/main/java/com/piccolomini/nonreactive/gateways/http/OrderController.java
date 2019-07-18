@@ -36,7 +36,7 @@ public class OrderController {
 
   @GetMapping("/status")
   @ResponseStatus(HttpStatus.OK)
-  public Long findStatus() {
+  public String findStatus() {
     return orderStatusGateway.getStatus(1L);
   }
 

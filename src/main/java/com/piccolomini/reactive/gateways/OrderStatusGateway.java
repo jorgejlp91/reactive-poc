@@ -1,12 +1,9 @@
 package com.piccolomini.reactive.gateways;
 
+import com.piccolomini.reactive.domains.Order;
 import reactor.core.publisher.Mono;
 
 public interface OrderStatusGateway {
 
-  Mono<Long> getStatus(Long orderId);
-
-  default String sanitize(final String content) {
-    return content.replace("\n", "").replace("\r", "");
-  }
+  Mono<Order> getStatus(Long orderId);
 }

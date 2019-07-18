@@ -38,15 +38,11 @@ public class GetOrderStatusUseCase {
         .forEach(
             order -> {
               log.info("calling status service for order {}", order.getId());
-              order.setStatus(getStatus(orderStatusGateway.getStatus(order.getId())));
+              order.setStatus(orderStatusGateway.getStatus(order.getId()));
             });
     return orderList
         .parallelStream()
         .filter(order -> BigDecimal.valueOf(10.00).compareTo(order.getUnitPrice()) < 0)
         .collect(Collectors.toList());
-  }
-
-  private String getStatus(Long status) {
-    return statusMap.get(status);
   }
 }

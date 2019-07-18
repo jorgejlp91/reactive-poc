@@ -18,7 +18,7 @@ services:
 
   mongo:
     #    image: mongo
-    build: .
+    build: dependencies/mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
@@ -42,10 +42,7 @@ services:
       - postgres-compose-network
 
   postgres:
-    #    image: postgres
-    build:
-      context: .
-      dockerfile: DockerfilePostgres
+    build: dependencies/postgres
     container_name: postegresdb
     environment:
       POSTGRES_PASSWORD: pass123
@@ -54,6 +51,12 @@ services:
       - "5432:5432"
     networks:
       - postgres-compose-network
+
+  mocks:
+    build: dependencies/mocks
+    ports:
+      - "8084:8084"
+      - "8907:8907"
 
 networks:
   mongo-compose-network:

@@ -1,11 +1,14 @@
 package com.piccolomini.nonreactive.gateways.client;
 
 import com.piccolomini.nonreactive.gateways.OrderStatusGateway;
+import com.piccolomini.nonreactive.gateways.client.json.OrderStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -13,10 +16,10 @@ public class OrderStatusGatewayImpl implements OrderStatusGateway {
 
   private final RestTemplate client;
 
-  @Value("${inventory.uri:https://www.random.org}")
+  @Value("${integration.uri:http://localhost:8084}")
   private String orderUri;
 
-  @Value("${inventory.endpoint:/integers/?num=1&min=1&max=3&col=1&base=10&format=plain}")
+  @Value("${integration.endpoint:/integration/api/v1/status}")
   private String orderEndpoint;
 
   @Autowired
@@ -25,13 +28,20 @@ public class OrderStatusGatewayImpl implements OrderStatusGateway {
   }
 
   @Override
-  public Long getStatus(final Long orderId) {
-    String rawStatus = getRandomAsString(orderUri + orderEndpoint);
-    log.info("Get order status: {} | order: {}", rawStatus, orderId);
-    return Long.valueOf(sanitize(rawStatus));
+  public String getStatus(final Long orderId) {
+
+    OrderStatus orderStatus =
+        Optional.ofNullable(
+                client.postForObject(
+                    orderUri + orderEndpoint, buildBody(orderId), OrderStatus.class))
+            .orElse(new OrderStatus());
+    log.info("Get order status: {} | order: {}", orderStatus.getStatus(), orderId);
+    return orderStatus.getStatus();
   }
 
-  private String getRandomAsString(final String url) {
-    return client.getForObject(url, String.class);
+  private OrderStatus buildBody(final Long orderId) {
+    OrderStatus body = new OrderStatus();
+    body.setOrderId(orderId);
+    return body;
   }
 }

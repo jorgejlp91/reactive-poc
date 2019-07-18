@@ -1,0 +1,42 @@
+- request:
+    url: /integration/api/v1/status
+    method: POST
+    json: '{"orderId":1}'
+  response:
+    latency: 500
+    status: 200
+    headers:
+      content-type: application/json
+    body: '{"status":"PAID"}'
+
+- request:
+    url: /integration/api/v1/status
+    method: POST
+    json: '{"orderId":2}'
+  response:
+    latency: 500
+    status: 200
+    headers:
+      content-type: application/json
+    body: '{"status":"CANCELED"}'
+
+- request:
+    url: /integration/api/v1/status
+    method: POST
+    json: '{"orderId":3}'
+  response:
+    latency: 500
+    status: 200
+    headers:
+      content-type: application/json
+    body: '{"status":"PROCESS"}'
+
+- request:
+    url: /integration/api/v1/status
+    method: POST
+  response:
+    latency: 500
+    status: 200
+    headers:
+      content-type: application/json
+    body: '{"status":"OK"}'
