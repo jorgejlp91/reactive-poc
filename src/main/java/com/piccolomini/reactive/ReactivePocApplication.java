@@ -6,11 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
 
 @SpringBootApplication
 @EnableMongoRepositories(
     excludeFilters =
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AccountRepository.class))
+@EnableSwagger2WebFlux
 public class ReactivePocApplication {
 
   public static void main(String[] args) {
